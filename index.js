@@ -5,6 +5,7 @@ dotenv.config();
 const app = express();
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { createRemoteJWKSet, jwtVerify } = require('jose-cjs');
 app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 8000;
@@ -24,6 +25,31 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
+const JWKS = createRemoteJWKSet(
+  new URL('http://localhost:3000/api/auth/jwks')
+)
+
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader) {
+    return res.status(401).send({ message: 'Unauthorized' });
+  }
+  const token = authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).send({ message: 'Unauthorized' });
+  }
+
+  try {
+    const {payload} = await jwtVerify(token, JWKS);
+  console.log(payload);
+  next();
+  }catch {
+    return res.status(403).send({ message: 'Forbidden' });
+  }
+
+}
+
 
 async function server() {
   try {
