@@ -33,6 +33,8 @@ async function server() {
     const data = client.db('roomsdb');
     const roomsCollection = data.collection('rooms');
 
+    const bookingsCollection = data.collection('bookings');
+
     app.get('/rooms', async (req, res) => {
       const cursor = roomsCollection.find();
       const result = await cursor.toArray();
@@ -58,6 +60,11 @@ async function server() {
       res.send(result);
     });
 
+    app.post('/bookings', async (req, res) => {
+      const booking = req.body;
+      const result = await bookingsCollection.insertOne(booking);
+      res.send(result);
+    });
 
      app.patch('/rooms/:id', async (req, res) => {
       const id = req.params.id;
