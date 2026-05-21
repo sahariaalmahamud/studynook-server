@@ -52,6 +52,13 @@ async function server() {
       res.send(room);
     });
 
+     app.post('/rooms', async (req, res) => {
+      const room = req.body;
+      const result = await roomsCollection.insertOne(room);
+      res.send(result);
+    });
+
+
      app.patch('/rooms/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -65,6 +72,8 @@ async function server() {
       const room = await roomsCollection.deleteOne(query);
       res.send(room);
     });
+
+
 
 
     // await client.db("admin").command({ ping: 1 });
