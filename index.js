@@ -41,20 +41,20 @@ async function server() {
       res.send(result);
     });
 
-      app.get('/available-rooms', async (req, res) => {
+    app.get('/available-rooms', async (req, res) => {
       const cursor = roomsCollection.find().limit(4);
       const result = await cursor.toArray();
       res.send(result);
     });
 
-     app.get('/rooms/:id', verifyToken, async (req, res) => {
+    app.get('/rooms/:id', verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const room = await roomsCollection.findOne(query);
       res.send(room);
     });
 
-     app.post('/rooms', async (req, res) => {
+    app.post('/rooms', async (req, res) => {
       const room = req.body;
       const result = await roomsCollection.insertOne(room);
       res.send(result);
@@ -66,7 +66,15 @@ async function server() {
       res.send(result);
     });
 
-     app.patch('/rooms/:id', async (req, res) => {
+    app.get('/bookings/:userId', async (req, res) => {
+      const userId = req.params.userId;
+      const query = { userId: userId };
+      const bookings = await bookingsCollection.find(query).toArray();
+      res.send(bookings);
+    });
+
+
+    app.patch('/rooms/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const room = await roomsCollection.updateOne(query, { $set: req.body });
