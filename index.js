@@ -59,7 +59,12 @@ async function server() {
       res.send(room);
     });
 
-
+    app.delete('/rooms/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const room = await roomsCollection.deleteOne(query);
+      res.send(room);
+    });
 
 
     // await client.db("admin").command({ ping: 1 });
