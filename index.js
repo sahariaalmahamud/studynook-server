@@ -39,6 +39,12 @@ async function server() {
       res.send(result);
     });
 
+      app.get('/available-rooms', async (req, res) => {
+      const cursor = roomsCollection.find().limit(4);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
